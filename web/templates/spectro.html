@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js" integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ==" crossorigin="anonymous"></script>
+  <style>
+  svg {
+    position: absolute; /*THIS CREATES THE SPIRAL*/
+    margin-left: 2%;
+    margin-top: 2%;
+  }
+
+  </style>
+</head>
+
+<body>
+  <button id="save-svg">save svg</button>
+  <div id="svg-vis"></div>
+
+  <script>
+    var margin = { top: 10, right: 10, bottom: 50, left: 100 },
+      width = 200 - margin.left - margin.right,
+      height = 200 - margin.top - margin.bottom;
+    
+    // var svg_container = d3.select('#svg-vis').append('svg')
+    //   .attr('width', width + margin.left + margin.right)
+    //   .attr('height', height + margin.top + margin.bottom)
+    // .append('g')
+    //     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+    function row(d) {
+        return {
+            x_val: +d.x_val,
+            y_val: +d.y_val,
+            data_channel: d.data_channel,
+        };
+    }
+
+    function saveSvg(name){
+      console.log("SAVING SVG")
+      var svg_data = document.documentElement.outerHTML.split("/script>")[document.documentElement.outerHTML.split("/script>").length-1].replace("</body>","").replace("</html>","");
+      console.log(svg_data)
+      var head = '<svg title="graph" version="1.1" xmlns="http://www.w3.org/2000/svg">'
+      var style = '<style>circle {cursor: pointer;}</style>'
+      var full_svg = head +  style + svg_data + "</svg>"
+      var blob = new Blob([full_svg], {type: "image/svg+xml"});
+      // console.log(full_svg)
+      saveAs(blob, name);
+      // var serializer = new XMLSerializer();
+      // var xmlString = serializer.serializeToString(d3.select('svg').node());
+      // var imgData = 'data:image/svg+xml;base64,' + btoa(xmlString);
+
+      // function writeDownloadLink(){
+      //     var html = d3.select(elementid).select("svg")
+      //             .attr("title", "svg_title")
+      //             .attr("version", 1.1)
+      //             .attr("xmlns", "http://www.w3.org/2000/svg")
+      //             .node().parentNode.innerHTML;  
+
+      //     d3.select(this)
+      //             .attr("href-lang", "image/svg+xml")
+      //             .attr("href", "data:image/svg+xml;base64,\n" + btoa(unescape(encodeURIComponent(html))))
+      // };
+
+      // var idselector = "#"+p.graph.svg.downloadID;
+
+      // d3.select(idselector)
+      //         .on("mouseover", writeDownloadLink);
+              
+    };
+    var op = 0.9
+    // var svg = d3.select('#svg-vis').append('svg')
+    //       .attr('width', width + margin.left + margin.right)
+    //       .attr('height', height + margin.top + margin.bottom)
+      // .append('g')
+      //     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+    // CSV columns are <data_channel>,	<x_val>,	<y_val>
+    d3.csv('./static/csv/img_pixels_cicada_summer_1_FLAT_SAMPLE.csv', row, function(error, data) {
+        if (error) throw error;
+        console.log(data)
+
+        // Scale the data
+        x_min = Math.min.apply(Math, data.map(x => x.x_val));
+        x_max = Math.max.apply(Math, data.map(x => x.x_val));
+        y_min = Math.min.apply(Math, data.map(x => x.y_val));
+        y_max = Math.max.apply(Math, data.map(x => x.y_val));
+        var n = data.length
+
+        //////////////////////// external svg ///////////////////////////////////////
+        // Programmatically load svgs
+        // d3.xml("./static/shape_elements/yellow_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
+        svg = d3.select("#svg-vis")
+            .append("svg")
+            // .attr("width",  200)
+            // .attr("height", 100)
+            .attr("overflow", "visible");
+
+        group = svg
+            .append("g")
+
+        // d3.xml("./static/shape_elements/yellow_line.svg").mimeType("image/svg+xml").get(function(error, xml) {
+
+        //   if (error) throw error;
+
+        //   let svgNode = xml.getElementsByTagName("svg")[0];
+          scale = 10
+          glyph_h_w = 10
+          size_scale = 2
+          translate_scale = 1.5 //higher is closer together
+
+          // d3.select('#svg-vis')
+          group
+            .data(data)
+            .enter()
+            .append("svg")
+              .attr("width", glyph_h_w)
+              .attr("height", glyph_h_w)
+              .style("opacity", op)
+              .attr("transform", function (d) {
+                return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel+")"
+              })
+              .attr("class", "svg-line")
+              // .html('<circle r="16" fill="red"></circle>')
+              .html('spectro:122 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72.15 35.62"><defs><style>.cls-1{fill:#d0a14a;}</style></defs><title>Asset 3</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path class="cls-1" d="M2.24,35.41C10.73,30.56,19,25.31,27.63,20.75A221.28,221.28,0,0,1,55.09,8.58c5.31-1.95,10.68-3.73,16-5.6,1.81-.63,1-3.53-.8-2.89-9.6,3.35-19.24,6.54-28.56,10.62A249.64,249.64,0,0,0,15.2,24.3C10.37,27.14,5.59,30,.73,32.82a1.5,1.5,0,0,0,1.51,2.59Z"></path></g></g></svg>')
+              // .each(function (d) {
+              //     // this.appendChild(svgNode.cloneNode(true));
+              //     // console.log(d)
+              //     console.log(this.innerHTML)
+              //     // document.getElementById("svg-vis").appendChild(svgNode.cloneNode(true));
+              //     // document.getElementById("svg-vis").appendChild(xml.documentElement)
+              // })
+              // .on("mouseover", function(d) {
+              //   console.log("x: "+d.x_val +" y: "+d.y_val+ " d: "+d.data_channel)
+              //   })
+        // });
+        //////////////////////// external svg ///////////////////////////////////////
+
+    });
+
+    $("#save-svg").click(
+      function(){
+        saveSvg('cicada_spectro.svg')
+      }
+    )
+    
+  </script>
+</body>

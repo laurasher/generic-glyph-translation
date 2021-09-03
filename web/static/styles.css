@@ -1,0 +1,73 @@
+<style>
+:root {
+  --left: 7%;
+  --leading: 1%;
+  --leading-title: 7%;
+  --responsive-font-size: 0.75vw;
+  --responsive-font-size-title: 1.3vw;
+  --responsive-font-size-buttons: 0.65vw;
+  --responsive-container-width: 75%;
+  --mobility-button-height: 1.6vw;
+  --selector-button-height: 1.3vw;
+}
+
+body {
+  font-family:"avenir next", Arial, sans-serif;
+  font-size: var(--responsive-font-size);
+  color: black;
+  /*background: #0f0f60;
+  */
+  /*background: #f8f0e4;*/
+}
+
+input:focus {
+  outline:none;
+}
+
+#title{
+  /*font-size: 36px;*/
+  font-size: var(--responsive-font-size-title);
+  font-family:"avenir next", Arial, sans-serif;
+  margin-bottom: var(--leading);
+  padding-top: var(--leading-title);
+  text-align: center;
+  color: white;
+}
+#vis{
+  /*float: left;*/
+  display: block;
+  width: var(--responsive-container-width);
+  margin-top: var(--leading-title);
+  /*margin-left: var(--left);*/
+}
+#text{
+  color: white;
+  display: inline-block;
+  margin-left: var(--left);
+  margin-bottom: var(--leading);
+  width: var(--responsive-container-width);
+}
+div.tooltip { 
+  position: absolute;     
+  text-align: center;     
+  width: auto;          
+  height: auto;         
+  font: 12px sans-serif; 
+  color: black;   
+  background: white;
+  border: 0px;    
+  pointer-events: none;
+  text-align: center;
+  vertical-align: center;    
+}
+svg {
+/*display: block;*/
+position: absolute;
+margin-left: 40%;
+margin-top: 20%;
+/*margin: 0 auto;*/
+/*border: yellowgreen;
+border-style: dashed;*/
+}
+
+</style>
