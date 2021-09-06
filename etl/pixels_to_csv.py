@@ -49,5 +49,10 @@ for file in fileList:
     df1.to_csv(f'{save_path}img_pixels_{file_rootname}_FLAT.csv')
     print(f'{save_path}img_pixels_{file_rootname}_FLAT.csv')
     # df1.head(2000).to_csv(f'{save_path}img_pixels_{file_rootname}_FLAT_SAMPLE.csv')
-    df1.sample(frac=0.0095, replace=True, random_state=1).to_csv(f'{save_path}img_pixels_{file_rootname}_FLAT_SAMPLE.csv')
+    # df1.sample(frac=0.0098, replace=True, random_state=1).to_csv(f'{save_path}img_pixels_{file_rootname}_FLAT_SAMPLE.csv')
     # df1.sample(frac=0.0009, replace=True, random_state=1).to_csv(f'{save_path}img_pixels_{file_rootname}_FLAT_SAMPLE.csv')
+
+    # df1.sample(frac=0.0003, replace=True, random_state=1).to_csv(f'{save_path}img_pixels_{file_rootname}_FLAT_SAMPLE_1.csv')
+
+
+    df1.sample(frac=0.0002, replace=True, random_state=1).to_csv(f'{save_path}img_pixels_{file_rootname}_FLAT_SAMPLE_2.csv')
