@@ -52,7 +52,7 @@
     var op = 0.9
 
     // CSV columns are <data_channel>,	<x_val>,	<y_val>
-    d3.csv('./static/csv/img_pixels_cicada_summer_1_FLAT_SAMPLE.csv', row, function(error, data) {
+    d3.csv('./static/csv/img_pixels_cicada_summer_2_FLAT_SAMPLE.csv', row, function(error, data) {
         if (error) throw error;
         console.log(data)
 
@@ -80,7 +80,7 @@
               .attr("height", glyph_h_w)
               .style("opacity", op)
               .attr("transform", function (d) {
-                return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel+")"
+                return "scale(" + d.data_channel/80 + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel+")"
               })
               .each(function (d) {
                   this.appendChild(svgNode.cloneNode(true));
