@@ -80,7 +80,7 @@
               .attr("height", glyph_h_w)
               .style("opacity", op)
               .attr("transform", function (d) {
-                return "scale(" + d.data_channel/80 + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel+")"
+                return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel+")"
               })
               .each(function (d) {
                   this.appendChild(svgNode.cloneNode(true));
@@ -91,34 +91,34 @@
         });
     });
 
-    // d3.csv('./static/csv/img_pixels_cicada_summer_1_FLAT_SAMPLE_2.csv', row, function(error, data) {
-    //     d3.xml("./static/shape_elements/blob_2.svg").mimeType("image/svg+xml").get(function(error, xml) {
-    //       let svgNode = xml.getElementsByTagName("svg")[0];
-    //       scale = 10
-    //       glyph_h_w = 10
-    //       size_scale = 6
-    //       translate_scale = 8 //higher is closer together
+    d3.csv('./static/csv/img_pixels_cicada_summer_1_FLAT_SAMPLE_1.csv', row, function(error, data) {
+        d3.xml("./static/shape_elements/black_rect.svg").mimeType("image/svg+xml").get(function(error, xml) {
+          let svgNode = xml.getElementsByTagName("svg")[0];
+          scale = 10
+          glyph_h_w = 10
+          size_scale = 6
+          translate_scale = 8 //higher is closer together
 
-    //       d3.select('#svg-vis')
-    //         .data(data)
-    //         .enter()
-    //         .append("svg")
-    //           .attr("width", glyph_h_w)
-    //           .attr("height", glyph_h_w)
-    //           .style("opacity", op)
-    //           .attr("transform", function (d) {
-    //             return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel+")"
-    //           })
-    //           .each(function (d) {
-    //               this.appendChild(svgNode.cloneNode(true));
-    //           })
-    //           .on("mouseover", function(d) {
-    //             console.log("x: "+d.x_val +" y: "+d.y_val+ " d: "+d.data_channel)
-    //             })
-    //     });
-    //     //////////////////////// external svg ///////////////////////////////////////
+          d3.select('#svg-vis')
+            .data(data)
+            .enter()
+            .append("svg")
+              .attr("width", glyph_h_w)
+              .attr("height", glyph_h_w)
+              .style("opacity", op)
+              .attr("transform", function (d) {
+                return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel+")"
+              })
+              .each(function (d) {
+                  this.appendChild(svgNode.cloneNode(true));
+              })
+              .on("mouseover", function(d) {
+                console.log("x: "+d.x_val +" y: "+d.y_val+ " d: "+d.data_channel)
+                })
+        });
+        //////////////////////// external svg ///////////////////////////////////////
 
-    // });
+    });
 
     $("#save-svg").click(
       function(){
