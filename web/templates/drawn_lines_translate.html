@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js" integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ==" crossorigin="anonymous"></script>
+  <style>
+  svg {
+    position: absolute; /*THIS CREATES THE SPIRAL*/
+    margin-left: 10%;
+    margin-top: 10%;
+  }
+
+  </style>
+</head>
+
+<body>
+  <div style="margin-left: 30px" id="svg-vis"></div>
+
+  <script>
+    var margin = { top: 10, right: 10, bottom: 50, left: 100 },
+      width = 200 - margin.left - margin.right,
+      height = 200 - margin.top - margin.bottom;
+
+
+    function row(d) {
+        return {
+            x_val: +d.x_val,
+            y_val: +d.y_val,
+            data_channel: d.data_channel,
+        };
+    }
+
+    function getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+    
+    var op = 0.8
+
+    function plot(data_file, image_file) {
+        // CSV columns are <data_channel>,	<x_val>,	<y_val>
+        d3.csv(data_file, row, function(error, data) {
+            if (error) throw error;
+            // console.log(data)
+
+            // Scale the data
+            x_min = Math.min.apply(Math, data.map(x => x.x_val));
+            x_max = Math.max.apply(Math, data.map(x => x.x_val));
+            y_min = Math.min.apply(Math, data.map(x => x.y_val));
+            y_max = Math.max.apply(Math, data.map(x => x.y_val));
+            let n = data.length
+
+            //////////////////////// external svg ///////////////////////////////////////
+            // Programmatically load svgs
+            d3.xml(image_file).mimeType("image/svg+xml").get(function(error, xml) {
+            let svgNode = xml.getElementsByTagName("svg")[0];
+            // scale = 100
+            let glyph_h_w = 50
+            // let glyph_h_w = getRandomArbitrary(40, 50)
+            let size_scale = 3 //scale of overall composition
+            // let translate_scale = 4 //higher is closer together
+            let translate_scale = 4 //higher is closer together
+            // let rot_scale = getRandomArbitrary(0.6, 5)
+            let rot_scale = 3
+
+            d3.select('#svg-vis')
+                .data(data)
+                .enter()
+                .append("svg")
+                .attr("width", glyph_h_w)
+                .attr("height", glyph_h_w)
+                .style("opacity", op)
+                .attr("transform", function (d) {
+                    return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel*rot_scale+")"
+                })
+                .each(function (d) {
+                    this.appendChild(svgNode.cloneNode(true));
+                })
+                .on("mouseover", function(d) {
+                    console.log("FILE: "+image_file+"\n")
+                    })
+            });
+        });
+    }
+    
+    plot('./static/csv/drawn_lines/sample_1_0.csv', './static/shape_elements/6c.svg')
+    plot('./static/csv/drawn_lines/sample_1_1.csv', './static/shape_elements/7c.svg')
+    plot('./static/csv/drawn_lines/sample_1_2.csv', './static/shape_elements/8c.svg')
+    plot('./static/csv/drawn_lines/sample_2_3.csv', './static/shape_elements/9c.svg')
+    plot('./static/csv/drawn_lines/sample_1_4.csv', './static/shape_elements/10c.svg')
+    plot('./static/csv/drawn_lines/sample_2_5.csv', './static/shape_elements/11c.svg')
+    plot('./static/csv/drawn_lines/sample_1_6.csv', './static/shape_elements/12c.svg')
+    plot('./static/csv/drawn_lines/sample_1_7.csv', './static/shape_elements/13c.svg')
+    plot('./static/csv/drawn_lines/sample_1_8.csv', './static/shape_elements/14c.svg')
+    // plot('./static/csv/drawn_lines/sample_2_9.csv', './static/shape_elements/15c.svg')
+    plot('./static/csv/drawn_lines/sample_2_10.csv', './static/shape_elements/16c.svg')
+    // plot('./static/csv/drawn_lines/sample_1_11.csv', './static/shape_elements/17c.svg')
+    plot('./static/csv/drawn_lines/sample_1_12.csv', './static/shape_elements/18c.svg')
+    plot('./static/csv/drawn_lines/sample_2_13.csv', './static/shape_elements/19c.svg')
+    
+  </script>
+</body>

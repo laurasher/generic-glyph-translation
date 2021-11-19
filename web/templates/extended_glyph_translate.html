@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js" integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ==" crossorigin="anonymous"></script>
+  <style>
+  svg {
+    position: absolute; /*THIS CREATES THE SPIRAL*/
+    margin-left: 2%;
+    margin-top: 2%;
+  }
+
+  </style>
+</head>
+
+<body>
+  <button id="save-svg">save svg</button>
+  <div id="svg-vis"></div>
+
+  <script>
+    var margin = { top: 10, right: 10, bottom: 50, left: 100 },
+      width = 200 - margin.left - margin.right,
+      height = 200 - margin.top - margin.bottom;
+    
+    // var svg_container = d3.select('#svg-vis').append('svg')
+    //   .attr('width', width + margin.left + margin.right)
+    //   .attr('height', height + margin.top + margin.bottom)
+    // .append('g')
+    //     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+    function row(d) {
+        return {
+            x_val: +d.x_val,
+            y_val: +d.y_val,
+            data_channel: d.data_channel,
+        };
+    }
+
+    function saveSvg(name){
+      console.log("SAVING SVG")
+      var svg_data = document.documentElement.outerHTML.split("/script>")[document.documentElement.outerHTML.split("/script>").length-1].replace("</body>","").replace("</html>","");
+      console.log(svg_data)
+      var head = '<svg title="graph" version="1.1" xmlns="http://www.w3.org/2000/svg">'
+      var style = '<style>circle {cursor: pointer;}</style>'
+      var full_svg = head +  style + svg_data + "</svg>"
+      var blob = new Blob([full_svg], {type: "image/svg+xml"});
+      saveAs(blob, name);
+              
+    };
+    var op = 0.9
+    var rotate = true;
+    // CSV columns are <data_channel>,	<x_val>,	<y_val>
+    // d3.csv('./static/csv/sample_cicada_summer_1_3e-05.csv', row, function(error, data) {
+    //     d3.xml("./static/shape_elements/e7.svg").mimeType("image/svg+xml").get(function(error, xml) {
+    //       let svgNode = xml.getElementsByTagName("svg")[0];
+    //       scale = 10
+    //       glyph_h_w = 10
+    //       size_scale = 3
+    //       translate_scale = 4 //higher is closer together
+
+    //       d3.select('#svg-vis')
+    //         .data(data)
+    //         .enter()
+    //         .append("svg")
+    //           .attr("width", glyph_h_w)
+    //           .attr("height", glyph_h_w)
+    //           .style("opacity", op)
+    //           .attr("transform", function (d) {
+    //             if (rotate){
+    //                 return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel+")"
+    //             } else {
+    //                 return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +")"
+    //             }
+    //           })
+    //           .each(function (d) {
+    //               this.appendChild(svgNode.cloneNode(true));
+    //           })
+    //           .on("mouseover", function(d) {
+    //             console.log("x: "+d.x_val +" y: "+d.y_val+ " d: "+d.data_channel)
+    //             })
+    //     });
+    // });
+
+    // d3.csv('./static/csv/sample_cicada_summer_2_3e-05.csv', row, function(error, data) {
+    //     d3.xml("./static/shape_elements/e4.svg").mimeType("image/svg+xml").get(function(error, xml) {
+    //       let svgNode = xml.getElementsByTagName("svg")[0];
+    //       scale = 10
+    //       glyph_h_w = 10
+    //       size_scale = 6
+    //       translate_scale = 8 //higher is closer together
+
+    //       d3.select('#svg-vis')
+    //         .data(data)
+    //         .enter()
+    //         .append("svg")
+    //           .attr("width", glyph_h_w)
+    //           .attr("height", glyph_h_w)
+    //           .style("opacity", op)
+    //           .attr("transform", function (d) {
+    //             if (rotate){
+    //                 return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel+")"
+    //             } else {
+    //                 return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +")"
+    //             }
+    //           })
+    //           .each(function (d) {
+    //               this.appendChild(svgNode.cloneNode(true));
+    //           })
+    //           .on("mouseover", function(d) {
+    //             console.log("x: "+d.x_val +" y: "+d.y_val+ " d: "+d.data_channel)
+    //             })
+    //     });
+    // });
+
+    // d3.csv('./static/csv/sample_cicada_summer_2_0.0001.csv', row, function(error, data) {
+    //     d3.xml("./static/shape_elements/d3.svg").mimeType("image/svg+xml").get(function(error, xml) {
+    //       let svgNode = xml.getElementsByTagName("svg")[0];
+    //       scale = 10
+    //       glyph_h_w = 10
+    //       size_scale = 3
+    //       translate_scale = 4 //higher is closer together
+
+    //       d3.select('#svg-vis')
+    //         .data(data)
+    //         .enter()
+    //         .append("svg")
+    //           .attr("width", glyph_h_w)
+    //           .attr("height", glyph_h_w)
+    //           .style("opacity", op)
+    //           .attr("transform", function (d) {
+    //             if (rotate){
+    //                 return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel+")"
+    //             } else {
+    //                 return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +")"
+    //             }
+    //           })
+    //           .each(function (d) {
+    //               this.appendChild(svgNode.cloneNode(true));
+    //           })
+    //           .on("mouseover", function(d) {
+    //             console.log("x: "+d.x_val +" y: "+d.y_val+ " d: "+d.data_channel)
+    //             })
+    //     });
+    // });
+
+    // d3.csv('./static/csv/sample_cicada_summer_1_0.0001.csv', row, function(error, data) {
+    //     d3.xml("./static/shape_elements/d5.svg").mimeType("image/svg+xml").get(function(error, xml) {
+    //       let svgNode = xml.getElementsByTagName("svg")[0];
+    //       scale = 10
+    //       glyph_h_w = 10
+    //       size_scale = 6
+    //       translate_scale = 8 //higher is closer together
+
+    //       d3.select('#svg-vis')
+    //         .data(data)
+    //         .enter()
+    //         .append("svg")
+    //           .attr("width", glyph_h_w)
+    //           .attr("height", glyph_h_w)
+    //           .style("opacity", op)
+    //           .attr("transform", function (d) {
+    //             if (rotate){
+    //                 return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel+")"
+    //             } else {
+    //                 return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +")"
+    //             }
+    //           })
+    //           .each(function (d) {
+    //               this.appendChild(svgNode.cloneNode(true));
+    //           })
+    //           .on("mouseover", function(d) {
+    //             console.log("x: "+d.x_val +" y: "+d.y_val+ " d: "+d.data_channel)
+    //             })
+    //     });
+    // });
+
+    d3.csv('./static/csv/sample_cicada_summer_1_0.0001.csv', row, function(error, data) {
+        d3.xml("./static/shape_elements/g5.svg").mimeType("image/svg+xml").get(function(error, xml) {
+          let svgNode = xml.getElementsByTagName("svg")[0];
+          scale = 10
+          glyph_h_w = 10
+          size_scale = 6
+          translate_scale = 8 //higher is closer together
+
+          d3.select('#svg-vis')
+            .data(data)
+            .enter()
+            .append("svg")
+              .attr("width", glyph_h_w)
+              .attr("height", glyph_h_w)
+              .style("opacity", op)
+              .attr("transform", function (d) {
+                if (rotate){
+                    return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel+")"
+                } else {
+                    return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +")"
+                }
+              })
+              .each(function (d) {
+                  this.appendChild(svgNode.cloneNode(true));
+              })
+              .on("mouseover", function(d) {
+                console.log("x: "+d.x_val +" y: "+d.y_val+ " d: "+d.data_channel)
+                })
+        });
+    });
+
+    $("#save-svg").click(
+      function(){
+        saveSvg('cicada_spectro.svg')
+      }
+    )
+    
+  </script>
+</body>
