@@ -48,8 +48,8 @@ for file in fileList:
     file_rootname = file.replace(".png","").replace("images/","")
     # file_rootname = 'dl'
     # for i, s in enumerate([.0001, .00009, .00008]):
-    for i, s in enumerate([1, 2, 1, 2, 2, 2, 2, 1, 2, 1, 1, 2, 1, 2, 1, 1, 2, 2, 1]):
+    for i, s in enumerate([5, 2, 6, 12, 4, 5, 2, 3, 2, 3, 6, 6, 3, 6, 3, 4, 2, 4, 3]):
         f = f'{save_path}{file_rootname}_{i}.csv'
         print(f)
         # df2.sample(frac=s, replace=True, random_state=1).to_csv(f)
-        df2.sample(n=i, replace=True).to_csv(f)
+        df2.sample(n=s, replace=True).to_csv(f)
