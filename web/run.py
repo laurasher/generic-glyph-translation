@@ -31,5 +31,9 @@ def spectro():
 def drawn_lines():
 	return render_template("drawn_lines_translate.html")
 
+@app.route('/drawn_marks', methods=['GET'])
+def drawn_marks():
+	return render_template("drawn_marks_translate.html")
+
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5050)
