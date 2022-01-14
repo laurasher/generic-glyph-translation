@@ -19,7 +19,8 @@ def createFileList(myDir, format='.png'):
 # load the original image
 fileList = createFileList('images/')
 # save_path = "results/"
-save_path = "../web/static/csv/drawn_lines/"
+# save_path = "../web/static/csv/drawn_lines/"
+save_path = "../web/static/csv/drawn_marks/"
 
 for file in fileList:
     # print(f"-- {file}")
@@ -48,7 +49,7 @@ for file in fileList:
     file_rootname = file.replace(".png","").replace("images/","")
     # file_rootname = 'dl'
     # for i, s in enumerate([.0001, .00009, .00008]):
-    for i, s in enumerate([5, 2, 6, 12, 4, 5, 2, 3, 2, 3, 6, 6, 3, 6, 3, 4, 2, 4, 3]):
+    for i, s in enumerate([5, 12, 6, 12, 4, 5, 8, 3, 6, 3, 6, 6, 6, 6, 5, 4, 8, 9, 13]):
         f = f'{save_path}{file_rootname}_{i}.csv'
         print(f)
         # df2.sample(frac=s, replace=True, random_state=1).to_csv(f)
