@@ -34,12 +34,18 @@ for file in fileList:
     # Make image Greyscale
     img_grey = img_file.convert('L')
     img_grey.save(f'{save_path}result.png')
+    img_grey.save(f'{save_path}_grayscale_intermediate.png')
     # img_grey.show()
 
     # Save Greyscale values
     value = np.asarray(img_grey.getdata(), dtype=np.int).reshape((img_grey.size[1], img_grey.size[0]))
     # value = value.flatten()
     df = pd.DataFrame(value)
+    print("\nsave raw df csv")
+    df_to_save = df
+    df_to_save[df_to_save==84] = 0
+    df_to_save.to_csv(f"{save_path}raw_df.csv")
+
     df = df[df>84]
     df1 = df.stack().reset_index()
     df1.columns = ['x_val','y_val','data_channel']
