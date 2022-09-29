@@ -12,7 +12,7 @@ moth_file = "audio/19700115_163910_trim.wav"
 moth, sr = librosa.load(moth_file)
 # moth2, _ = librosa.load(moth_file_2)
 
-#Extracting Short-Time Fourier Transform
+# Extracting Short-Time Fourier Transform
 FRAME_SIZE = 2048
 HOP_SIZE = 512
 
@@ -26,16 +26,16 @@ print(S_moth.shape)
 Y_moth = np.abs(S_moth) ** 2
 # Y_moth_2 = np.abs(S_moth_2) ** 2
 
+
 def plot_spectrogram(Y, sr, hop_length, file_append, y_axis="linear"):
     plt.figure(figsize=(25, 10))
-    librosa.display.specshow(Y, 
-                             sr=sr, 
-                             hop_length=hop_length, 
-                             x_axis="time", 
-                             y_axis=y_axis)
+    librosa.display.specshow(
+        Y, sr=sr, hop_length=hop_length, x_axis="time", y_axis=y_axis
+    )
     plt.colorbar(format="%+2.f")
-    plt.savefig(f'19700115_163910_trim.png')
-    plt.savefig(f'19700115_163910_trim.svg')
+    plt.savefig(f"19700115_163910_trim.png")
+    plt.savefig(f"19700115_163910_trim.svg")
+
 
 # Visualizing the spectrogram
 plot_spectrogram(Y_moth, sr, HOP_SIZE, 0)
