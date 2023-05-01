@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js" integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ==" crossorigin="anonymous"></script>
+  <script src="./static/libraries/d3-save-svg.min.js"></script>
+
+  <style>
+  svg {
+    position: absolute; /*THIS CREATES THE SPIRAL*/
+    margin-left: 10%;
+    margin-top: 5%;
+  }
+
+  </style>
+</head>
+
+<body>
+  <input id="dl" name="downloadButton" type="button" value="Download SVG"/>
+  <div style="margin-left: 30px" id="svg-vis"></div>   
+
+  <script>
+    var margin = { top: 10, right: 10, bottom: 50, left: 100 },
+      width = 200 - margin.left - margin.right,
+      height = 200 - margin.top - margin.bottom;
+
+    // Define what download button does
+    d3.select('#dl').on('click', function() {
+      var config = {
+        filename: 'customFileName',
+      }
+      d3_save_svg.save(d3.select('svg').node(), config);
+    });
+
+    function row(d) {
+        return {
+            x_val: +d.x_val,
+            y_val: +d.y_val,
+            data_channel: d.data_channel,
+        };
+    }
+
+    function getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    var svg = d3.select('#svg-vis')
+        .append('svg')
+        .attr("width", 600)
+        .attr("height", 800);
+
+    function plot(data_file, image_file, scale) {
+        // CSV columns are <data_channel>,	<x_val>,	<y_val>
+
+        let top_shift = 0;
+        let left_shift = 0;
+        d3.csv(data_file, row, function(error, data) {
+            if (error) throw error;
+            // console.log(data)
+
+            // Scale the data
+            x_min = Math.min.apply(Math, data.map(x => x.x_val));
+            x_max = Math.max.apply(Math, data.map(x => x.x_val));
+            y_min = Math.min.apply(Math, data.map(x => x.y_val));
+            y_max = Math.max.apply(Math, data.map(x => x.y_val));
+            let n = data.length
+
+            //////////////////////// external svg ///////////////////////////////////////
+            // Programmatically load svgs
+            d3.xml(image_file).mimeType("image/svg+xml").get(function(error, xml) {
+                let svgNode = xml.getElementsByTagName("svg")[0];
+
+                let glyph_h_w = getRandomArbitrary(20, 30)
+                let size_scale = .07 //scale of overall composition
+                if (scale) {
+                    // glyph_h_w = scale;
+                    size_scale = scale;
+                }
+                let translate_scale = .08 //higher is closer together
+                // let rot_scale = getRandomArbitrary(0.6, 5)
+                let rot_scale = 3
+
+                /* // To get download to work, need to only have one
+                d3.select('svg')
+                        .data(csv_data)
+                        .append("g")
+                        .attr("width", glyph_h_w)
+                            .attr("height", glyph_h_w)
+                            .style("fill", "none")
+                            .attr("transform", function (d) {
+                                // return "scale(" + size_scale + ") translate(" + (left_shift+d.x_val/translate_scale) + "," + (top_shift+d.y_val/translate_scale) +") rotate("+ d.data_channel*rot_scale+")"
+                                return "scale(" + size_scale + ") translate(" + (left_shift+d.x_val/translate_scale) + "," + (top_shift+d.y_val/translate_scale) +")"
+                            })
+                            // .attr("transform", "translate(0, 0)")
+                            .on("mouseover", function(d) {
+                                console.log("FILE: "+image_file+"\n")
+                            })
+                            .node().append(xml_data.documentElement)
+                })
+                */
+                d3.select('svg')
+                    .data(data)
+                    // .enter()
+                    // .append("svg")
+                    .append("g")
+                        // .attr("width", glyph_h_w)
+                        // .attr("height", glyph_h_w)
+                        // .attr("transform", function (d) {return "scale("+ size_scale+") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale + ") rotate("+ d.data_channel*rot_scale+")"})
+                        .attr("transform", function (d) {return "scale("+ size_scale+") translate(" + (d.x_val/translate_scale) + "," + (d.y_val/translate_scale) + ")"})
+
+                        // .attr("transform", function (d) {
+                        //     return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel*rot_scale+")"
+                        // })
+                        // .each(function (d) {
+                        //     this.appendChild(svgNode.cloneNode(true));
+                        // })
+                        .on("mouseover", function(d) {console.log("FILE: "+image_file+"\n")})
+                        .node().appendChild(xml.documentElement)
+
+                });
+        });
+    }
+
+    let base_file = "sample_1"
+    let base_file_2 = "sample_2"
+
+    plot('./static/csv/drawn_marks/'+base_file+'_0.csv', './static/shape_elements/a4.svg')
+    plot('./static/csv/drawn_marks/'+base_file+'_1.csv', './static/shape_elements/a6.svg')
+    plot('./static/csv/drawn_marks/'+base_file+'_2.csv', './static/shape_elements/a7.svg')
+    plot('./static/csv/drawn_marks/'+base_file+'_3.csv', './static/shape_elements/e6.svg')
+    plot('./static/csv/drawn_marks/'+base_file+'_4.csv', './static/shape_elements/e7.svg')
+    plot('./static/csv/drawn_marks/'+base_file+'_5.csv', './static/shape_elements/e3.svg')
+    plot('./static/csv/drawn_marks/'+base_file+'_6.csv', './static/shape_elements/e1.svg')
+    plot('./static/csv/drawn_marks/'+base_file+'_7.csv', './static/shape_elements/c2.svg')
+    plot('./static/csv/drawn_marks/'+base_file+'_8.csv', './static/shape_elements/d1.svg')
+    plot('./static/csv/drawn_marks/'+base_file+'_9.csv', './static/shape_elements/d2.svg')
+    plot('./static/csv/drawn_marks/'+base_file+'_10.csv','./static/shape_elements/d3.svg')
+    plot('./static/csv/drawn_marks/'+base_file+'_11.csv','./static/shape_elements/e7.svg')
+    plot('./static/csv/drawn_marks/'+base_file+'_12.csv','./static/shape_elements/d5.svg')
+    plot('./static/csv/drawn_marks/'+base_file+     '_13.csv',    './static/shape_elements/h1.svg')
+    plot('./static/csv/drawn_marks/'+base_file+     '_14.csv',    './static/shape_elements/h1.svg')
+    plot('./static/csv/drawn_marks/'+base_file+     '_15.csv',    './static/shape_elements/h8.svg')
+    plot('./static/csv/drawn_marks/'+base_file+     '_16.csv',    './static/shape_elements/h5.svg')
+    plot('./static/csv/drawn_marks/'+base_file+     '_17.csv',    './static/shape_elements/h5.svg')
+    plot('./static/csv/drawn_marks/'+base_file+     '_18.csv',    './static/shape_elements/h6.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_0.csv',     './static/shape_elements/h1.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_1.csv',     './static/shape_elements/h8.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_2.csv',     './static/shape_elements/h9.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_3.csv',     './static/shape_elements/h13.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_4.csv',     './static/shape_elements/h14.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_5.csv',     './static/shape_elements/h1.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_6.csv',     './static/shape_elements/h12.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_7.csv',     './static/shape_elements/h1.svg', .048)
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_8.csv',     './static/shape_elements/h5.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_9.csv',     './static/shape_elements/h9.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_10.csv',    './static/shape_elements/h9.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_11.csv',    './static/shape_elements/h5.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_12.csv',    './static/shape_elements/h5.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_13.csv',    './static/shape_elements/h1.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_14.csv',    './static/shape_elements/h15.svg', .060)
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_15.csv',    './static/shape_elements/h3.svg', .02)
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_16.csv',    './static/shape_elements/h4.svg', .02)
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_17.csv',    './static/shape_elements/h5.svg')
+    plot('./static/csv/drawn_marks/'+base_file_2+   '_18.csv',    './static/shape_elements/h6.svg')
+    
+  </script>
+</body>
