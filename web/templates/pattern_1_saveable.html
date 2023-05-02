@@ -54,8 +54,6 @@
     function plot(data_file, image_file, scale) {
         // CSV columns are <data_channel>,	<x_val>,	<y_val>
 
-        let top_shift = 0;
-        let left_shift = 0;
         d3.csv(data_file, row, function(error, data) {
             if (error) throw error;
             // console.log(data)
@@ -82,40 +80,13 @@
                 // let rot_scale = getRandomArbitrary(0.6, 5)
                 let rot_scale = 3
 
-                /* // To get download to work, need to only have one
-                d3.select('svg')
-                        .data(csv_data)
-                        .append("g")
-                        .attr("width", glyph_h_w)
-                            .attr("height", glyph_h_w)
-                            .style("fill", "none")
-                            .attr("transform", function (d) {
-                                // return "scale(" + size_scale + ") translate(" + (left_shift+d.x_val/translate_scale) + "," + (top_shift+d.y_val/translate_scale) +") rotate("+ d.data_channel*rot_scale+")"
-                                return "scale(" + size_scale + ") translate(" + (left_shift+d.x_val/translate_scale) + "," + (top_shift+d.y_val/translate_scale) +")"
-                            })
-                            // .attr("transform", "translate(0, 0)")
-                            .on("mouseover", function(d) {
-                                console.log("FILE: "+image_file+"\n")
-                            })
-                            .node().append(xml_data.documentElement)
-                })
-                */
                 d3.select('svg')
                     .data(data)
-                    // .enter()
-                    // .append("svg")
+                    // .enter() // THE ENTER makes the difference
                     .append("g")
-                        // .attr("width", glyph_h_w)
+                        // .attr("width", 5)
                         // .attr("height", glyph_h_w)
-                        // .attr("transform", function (d) {return "scale("+ size_scale+") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale + ") rotate("+ d.data_channel*rot_scale+")"})
-                        .attr("transform", function (d) {return "scale("+ size_scale+") translate(" + (d.x_val/translate_scale) + "," + (d.y_val/translate_scale) + ")"})
-
-                        // .attr("transform", function (d) {
-                        //     return "scale(" + size_scale + ") translate(" + d.x_val/translate_scale + "," + d.y_val/translate_scale +") rotate("+ d.data_channel*rot_scale+")"
-                        // })
-                        // .each(function (d) {
-                        //     this.appendChild(svgNode.cloneNode(true));
-                        // })
+                        .attr("transform", function (d) {return "scale("+ size_scale+") translate(" + (d.x_val/translate_scale) + "," + (d.y_val/translate_scale) + ") rotate("+ d.data_channel*rot_scale+")"})
                         .on("mouseover", function(d) {console.log("FILE: "+image_file+"\n")})
                         .node().appendChild(xml.documentElement)
 
